@@ -5,10 +5,27 @@
   "version": "0.0.1",
   "publisher": "akira1ce",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/akira1ce/markdown-frontmatter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/akira1ce/markdown-frontmatter/issues"
+  },
+  "homepage": "https://github.com/akira1ce/markdown-frontmatter#readme",
+  "keywords": [
+    "markdown",
+    "mdx",
+    "frontmatter",
+    "yaml",
+    "auto-update",
+    "timestamp"
+  ],
   "engines": {
     "vscode": "^1.85.0"
   },
   "categories": [
+    "Formatters",
     "Other"
   ],
   "activationEvents": [
@@ -83,7 +100,7 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "yarn compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "lint": "eslint src --ext ts"
