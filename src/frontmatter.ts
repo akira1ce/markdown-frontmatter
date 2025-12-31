@@ -1,5 +1,6 @@
 import matter from 'gray-matter';
-import { Config } from './config';
+import yaml from 'js-yaml';
+import { Config, FieldConfig } from './config';
 import { formatTime, generateSlug } from './utils';
 
 export interface FrontmatterData {
@@ -31,6 +32,23 @@ export function parseFrontmatter(text: string): ParsedContent {
   };
 }
 
+function getFieldValue(
+  fieldConfig: FieldConfig,
+  filePath: string,
+  timeFormat: string
+): unknown {
+  switch (fieldConfig.type) {
+    case 'timestamp':
+      return formatTime(timeFormat);
+    case 'filename':
+      return generateSlug(filePath);
+    case 'default':
+      return fieldConfig.value ?? '';
+    default:
+      return undefined;
+  }
+}
+
 export function updateFrontmatter(
   parsed: ParsedContent,
   filePath: string,
@@ -38,24 +56,35 @@ export function updateFrontmatter(
 ): FrontmatterData {
   const data = { ...parsed.data };
 
-  if (config.updateUpdatedTime) {
-    data[config.updatedTimeKey] = formatTime(config.timeFormat);
-  }
+  for (const [key, fieldConfig] of Object.entries(config.fields)) {
+    const shouldSkip = fieldConfig.onlyIfMissing && data[key] !== undefined;
+    if (shouldSkip) {
+      continue;
+    }
 
-  if (config.updateCreatedTime && !data[config.createdTimeKey]) {
-    data[config.createdTimeKey] = formatTime(config.timeFormat);
-  }
-
-  if (config.updateSlug) {
-    data[config.slugKey] = generateSlug(filePath);
+    const value = getFieldValue(fieldConfig, filePath, config.timeFormat);
+    if (value !== undefined) {
+      data[key] = value;
+    }
   }
 
   return data;
 }
 
 export function stringifyFrontmatter(data: FrontmatterData, content: string): string {
-  const result = matter.stringify(content, data);
-  return result;
+  let yamlStr = yaml.dump(data, {
+    quotingType: '"',
+    forceQuotes: false,
+    lineWidth: -1,
+  });
+
+  // Remove quotes from datetime values like "2025-12-31 15:42:53"
+  yamlStr = yamlStr.replace(/: ["'](\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})["']/g, ': $1');
+
+  // Ensure content starts with newline
+  const normalizedContent = content.startsWith('\n') ? content : '\n' + content;
+
+  return `---\n${yamlStr}---${normalizedContent}`;
 }
 
 export function processFrontmatter(

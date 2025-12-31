@@ -1,17 +1,30 @@
 import * as vscode from 'vscode';
 
+export type FieldType = 'timestamp' | 'filename' | 'default';
+
+export interface FieldConfig {
+  type: FieldType;
+  onlyIfMissing?: boolean;
+  value?: unknown;
+}
+
+export interface FieldsConfig {
+  [key: string]: FieldConfig;
+}
+
 export interface Config {
   enable: boolean;
   updateOnSave: boolean;
   fileTypes: string[];
-  updatedTimeKey: string;
-  createdTimeKey: string;
-  slugKey: string;
   timeFormat: string;
-  updateUpdatedTime: boolean;
-  updateCreatedTime: boolean;
-  updateSlug: boolean;
+  fields: FieldsConfig;
 }
+
+const DEFAULT_FIELDS: FieldsConfig = {
+  updatedTime: { type: 'timestamp' },
+  createdTime: { type: 'timestamp', onlyIfMissing: true },
+  slug: { type: 'filename' },
+};
 
 export function getConfig(): Config {
   const config = vscode.workspace.getConfiguration('markdownFrontmatter');
@@ -20,13 +33,8 @@ export function getConfig(): Config {
     enable: config.get<boolean>('enable', true),
     updateOnSave: config.get<boolean>('updateOnSave', true),
     fileTypes: config.get<string[]>('fileTypes', ['md', 'mdx']),
-    updatedTimeKey: config.get<string>('updatedTimeKey', 'updatedTime'),
-    createdTimeKey: config.get<string>('createdTimeKey', 'createdTime'),
-    slugKey: config.get<string>('slugKey', 'slug'),
     timeFormat: config.get<string>('timeFormat', 'YYYY-MM-DD HH:mm:ss'),
-    updateUpdatedTime: config.get<boolean>('updateUpdatedTime', true),
-    updateCreatedTime: config.get<boolean>('updateCreatedTime', true),
-    updateSlug: config.get<boolean>('updateSlug', true),
+    fields: config.get<FieldsConfig>('fields', DEFAULT_FIELDS),
   };
 }
 
