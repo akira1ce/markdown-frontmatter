@@ -2,6 +2,7 @@
   "name": "markdown-frontmatter",
   "displayName": "Markdown Frontmatter",
   "description": "Automatically update frontmatter fields (updatedTime, createdTime, slug) in Markdown/MDX files",
+  "icon": "logo.png",
   "version": "0.1.3",
   "publisher": "akira1ce",
   "license": "MIT",

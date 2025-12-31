@@ -1,5 +1,7 @@
 # Markdown Frontmatter
 
+![alt text](logo.png)
+
 A VSCode extension that automatically updates frontmatter fields in Markdown/MDX files on save.
 
 ## Features
