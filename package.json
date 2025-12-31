@@ -1,0 +1,100 @@
+{
+  "name": "markdown-frontmatter",
+  "displayName": "Markdown Frontmatter",
+  "description": "Automatically update frontmatter fields (updatedTime, createdTime, slug) in Markdown/MDX files",
+  "version": "0.0.1",
+  "publisher": "akira1ce",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:markdown",
+    "onLanguage:mdx"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "markdownFrontmatter.update",
+        "title": "Markdown Frontmatter: Update"
+      }
+    ],
+    "configuration": {
+      "title": "Markdown Frontmatter",
+      "properties": {
+        "markdownFrontmatter.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/disable the extension"
+        },
+        "markdownFrontmatter.updateOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically update frontmatter on file save"
+        },
+        "markdownFrontmatter.fileTypes": {
+          "type": "array",
+          "default": [
+            "md",
+            "mdx"
+          ],
+          "description": "File extensions to process"
+        },
+        "markdownFrontmatter.updatedTimeKey": {
+          "type": "string",
+          "default": "updatedTime",
+          "description": "Key name for updated time field"
+        },
+        "markdownFrontmatter.createdTimeKey": {
+          "type": "string",
+          "default": "createdTime",
+          "description": "Key name for created time field"
+        },
+        "markdownFrontmatter.slugKey": {
+          "type": "string",
+          "default": "slug",
+          "description": "Key name for slug field"
+        },
+        "markdownFrontmatter.timeFormat": {
+          "type": "string",
+          "default": "YYYY-MM-DD HH:mm:ss",
+          "description": "Time format (dayjs format)"
+        },
+        "markdownFrontmatter.updateUpdatedTime": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable updating the updatedTime field"
+        },
+        "markdownFrontmatter.updateCreatedTime": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable adding createdTime field (only if missing)"
+        },
+        "markdownFrontmatter.updateSlug": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable updating the slug field from filename"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.10",
+    "gray-matter": "^4.0.3"
+  }
+}
