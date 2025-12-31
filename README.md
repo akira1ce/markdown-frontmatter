@@ -1,6 +1,11 @@
+---
+updatedTime: '2025-12-31 17:14:51'
+createdTime: '2025-12-31 17:14:36'
+slug: README
+title: null
+category: null
+---
 # Markdown Frontmatter
-
-![alt text](logo.png)
 
 A VSCode extension that automatically updates frontmatter fields in Markdown/MDX files on save.
 
