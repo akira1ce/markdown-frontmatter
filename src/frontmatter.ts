@@ -33,6 +33,7 @@ export function parseFrontmatter(text: string): ParsedContent {
 }
 
 function getFieldValue(
+  key: string,
   fieldConfig: FieldConfig,
   filePath: string,
   timeFormat: string
@@ -43,7 +44,7 @@ function getFieldValue(
     case 'filename':
       return generateSlug(filePath);
     case 'default':
-      return fieldConfig.value ?? '';
+      return fieldConfig.value ?? key;
     default:
       return undefined;
   }
@@ -62,7 +63,7 @@ export function updateFrontmatter(
       continue;
     }
 
-    const value = getFieldValue(fieldConfig, filePath, config.timeFormat);
+    const value = getFieldValue(key, fieldConfig, filePath, config.timeFormat);
     if (value !== undefined) {
       data[key] = value;
     }
@@ -73,13 +74,13 @@ export function updateFrontmatter(
 
 export function stringifyFrontmatter(data: FrontmatterData, content: string): string {
   let yamlStr = yaml.dump(data, {
-    quotingType: '"',
+    quotingType: "'",
     forceQuotes: false,
     lineWidth: -1,
   });
 
-  // Remove quotes from datetime values like "2025-12-31 15:42:53"
-  yamlStr = yamlStr.replace(/: ["'](\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})["']/g, ': $1');
+  // Remove quotes from empty string values: key: "" or key: '' -> key:
+  yamlStr = yamlStr.replace(/: ["']{2}$/gm, ':');
 
   // Ensure content starts with newline
   const normalizedContent = content.startsWith('\n') ? content : '\n' + content;
